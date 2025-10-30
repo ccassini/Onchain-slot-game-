@@ -1,0 +1,24 @@
+*.map
+*.log
+debug/
+build/
+dist/
+node_modules/
+.idea/
+
+# Next.js build files
+.next/
+out/
+
+# Environment variables (private keys and secrets)
+.env
+.env.local
+.env.*.local
+
+# Hardhat artifacts ve cache
+artifacts
+cache
+typechain-types
+
+# Vercel
+.vercel

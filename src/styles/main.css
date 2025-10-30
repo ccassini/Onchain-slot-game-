@@ -1,0 +1,864 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #1a1a1a;
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    overflow: hidden;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+    position: relative;
+}
+
+#win-display {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: 2px solid #ffd700;
+}
+
+#win-text {
+    color: #ffd700;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+#game-area {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    padding: 80px 260px 120px 20px;
+    background: 
+        linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 100%),
+        url('../assets/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#game-area canvas {
+    position: relative !important;
+    z-index: 1 !important;
+    max-height: calc(100vh - 200px) !important;
+    object-fit: contain;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+#history-panel {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    bottom: 140px;
+    width: 240px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid #ffd700;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 10;
+    backdrop-filter: blur(6px);
+}
+
+.history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.18) 0%, rgba(255, 215, 0, 0.05) 100%);
+    border-bottom: 1px solid rgba(255, 215, 0, 0.35);
+}
+
+.history-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #ffd700;
+}
+
+#history-clear-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 215, 0, 0.45);
+    color: #ffd700;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#history-clear-btn:hover {
+    background: rgba(255, 215, 0, 0.2);
+}
+
+#history-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 215, 0, 0.6) rgba(0, 0, 0, 0);
+}
+
+#history-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+#history-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#history-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(255, 215, 0, 0.8), rgba(255, 165, 0, 0.8));
+    border-radius: 4px;
+}
+
+.history-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.12);
+    animation: historyFadeIn 0.3s ease;
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.history-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.history-meta .category {
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.history-meta .category.loss {
+    background: rgba(255, 69, 58, 0.2);
+    color: #ff453a;
+}
+
+.history-meta .category.partial {
+    background: rgba(255, 214, 10, 0.18);
+    color: #ffd60a;
+}
+
+.history-meta .category.win_low {
+    background: rgba(52, 199, 89, 0.18);
+    color: #34c759;
+}
+
+.history-meta .category.win_mid {
+    background: rgba(0, 122, 255, 0.18);
+    color: #0a84ff;
+}
+
+.history-meta .category.win_high {
+    background: rgba(175, 82, 222, 0.18);
+    color: #bf5af2;
+}
+
+.history-payoff {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow: 0 0 4px rgba(255, 215, 0, 0.4);
+}
+
+.history-details {
+    font-size: 11px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.history-details strong {
+    color: #ffd700;
+}
+
+.history-empty {
+    margin: auto;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 12px;
+    padding: 0 12px;
+}
+
+@keyframes historyFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.history-item.win .history-payoff {
+    color: #34c759;
+}
+
+.history-item.lose .history-payoff {
+    color: #ff453a;
+}
+
+.history-item.partial .history-payoff {
+    color: #ffd60a;
+}
+
+#control-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.9);
+    border-top: 2px solid #ffd700;
+    padding: 8px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    gap: 5px;
+}
+
+/* Home Button */
+.home-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 2px solid #ffd700;
+    border-radius: 12px;
+    padding: 10px 20px;
+    color: #ffd700;
+    font-family: 'Orbitron', 'Exo 2', 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 1001;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.home-btn:hover {
+    background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+    border-color: #ffed4e;
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+    color: #ffed4e;
+    transform: translateY(-2px);
+}
+
+/* Credit Info Styles */
+.credit-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 70px;
+}
+
+.credit-text, .bet-text {
+    color: #ffd700;
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
+}
+
+/* Bet Controls Styles */
+.bet-controls {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.bet-btn {
+    background: #333;
+    border: 2px solid #666;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 32px;
+    font-weight: bold;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bet-btn:hover {
+    background: #555;
+    border-color: #ffd700;
+    transform: scale(1.1);
+}
+
+.spin-btn {
+    background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+    border: 3px solid #ff6666;
+    border-radius: 25px;
+    color: #fff;
+    font-size: 28px;
+    font-weight: bold;
+    padding: 15px 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 15px rgba(255, 68, 68, 0.4);
+    min-width: 180px;
+}
+
+.spin-btn:hover {
+    background: linear-gradient(135deg, #ff6666 0%, #ff0000 100%);
+    box-shadow: 0 6px 20px rgba(255, 68, 68, 0.6);
+}
+
+.spin-btn:disabled {
+    background: #666;
+    border-color: #888;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.spin-icon {
+    font-size: 18px;
+}
+
+.spin-text {
+    font-size: 14px;
+}
+
+/* Game Options Styles */
+.game-options {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    min-width: 300px;
+}
+
+.wallet-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    min-width: 180px;
+}
+.wallet-btn {
+    background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+    border: 1px solid #ffd700;
+    color: #ffd700;
+    font-size: 12px;
+    padding: 6px 16px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.wallet-btn:hover {
+    background: rgba(255, 215, 0, 0.2);
+}
+.wallet-btn:disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+.wallet-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 12px;
+    gap: 2px;
+}
+.wallet-address {
+    color: #ffd700;
+    letter-spacing: 0.6px;
+}
+.wallet-balance {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: bold;
+}
+.wallet-balance span {
+    color: #ffd700;
+}
+
+
+.option-btn {
+    background: #333;
+    border: 1px solid #666;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 10px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 70px;
+    text-align: center;
+}
+
+.option-btn:hover {
+    background: #555;
+    border-color: #ffd700;
+}
+
+@media (max-width: 1200px) {
+    #history-panel {
+        display: none;
+    }
+    #game-area {
+        padding-right: 20px;
+    }
+}
+
+/* Spinning Animation */
+.spin-btn.spinning {
+    animation: spinPulse 0.5s infinite alternate;
+}
+
+@keyframes spinPulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .wallet-panel {
+        order: 4;
+        align-items: center;
+        min-width: auto;
+    }
+    .wallet-meta {
+        align-items: center;
+        text-align: center;
+    }
+    .wallet-address {
+        font-size: 11px;
+    }
+    .wallet-balance {
+        font-size: 11px;
+    }
+    #game-area {
+        padding: 60px 10px 100px 10px;
+    }
+    
+    #game-area canvas {
+        max-height: calc(100vh - 160px) !important;
+    }
+    
+    #win-display {
+        top: 10px;
+        padding: 8px 15px;
+    }
+    
+    #win-text {
+        font-size: 18px;
+    }
+    
+    #control-panel {
+        flex-direction: column;
+        gap: 5px;
+        padding: 8px 10px;
+    }
+    
+    .credit-info {
+        order: 1;
+        gap: 1px;
+    }
+    
+    .bet-controls {
+        order: 2;
+        gap: 1px;
+    }
+    
+    .game-options {
+        order: 3;
+        gap: 1px;
+    }
+    
+    .bet-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+    }
+    
+    .spin-btn {
+        padding: 12px 30px;
+        font-size: 20px;
+        min-width: 140px;
+    }
+    
+    .option-btn {
+        font-size: 8px;
+        padding: 3px 6px;
+        min-width: 60px;
+    }
+}
+
+/* Pay Table Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+    margin: 5% auto;
+    padding: 0;
+    border: 2px solid #ffd700;
+    border-radius: 15px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    background: linear-gradient(90deg, #ffd700 0%, #ffed4e 100%);
+    color: #000;
+    padding: 15px 20px;
+    border-radius: 13px 13px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.close {
+    color: #000;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #ff6b35;
+}
+
+.modal-body {
+    padding: 20px;
+    color: #fff;
+}
+
+.pay-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.pay-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid #444;
+}
+
+.pay-row.header {
+    background: linear-gradient(90deg, #ffd700 0%, #ffed4e 100%);
+    color: #000;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.pay-row.wild {
+    background: linear-gradient(90deg, #ff6b35 0%, #ff8c42 100%);
+    color: #fff;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.symbol {
+    font-weight: bold;
+    text-align: center;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+}
+
+.symbol-img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.payout {
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.pay-info {
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid #ffd700;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.pay-info p {
+    margin: 8px 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.pay-info strong {
+    color: #ffd700;
+}
+
+/* Mobile Responsive for Modal */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+    
+    .modal-header h2 {
+        font-size: 20px;
+    }
+    
+    .close {
+        font-size: 24px;
+    }
+    
+    .pay-row {
+        gap: 4px;
+        padding: 6px 0;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    }
+    
+    .symbol {
+        font-size: 14px;
+    }
+    
+    .symbol-img {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .payout {
+        font-size: 12px;
+    }
+}
+
+/* Deposit Modal Styles */
+.deposit-btn {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: all 0.3s ease;
+}
+
+.deposit-btn:hover {
+    background: linear-gradient(135deg, #45a049, #3d8b40);
+    transform: translateY(-1px);
+}
+
+.deposit-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.deposit-info p {
+    color: #ccc;
+    margin-bottom: 10px;
+}
+
+.rate-info {
+    display: flex;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.rate {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.min-deposit {
+    color: #ff9800;
+    font-size: 14px;
+}
+
+.deposit-form {
+    margin-bottom: 20px;
+}
+
+.deposit-form label {
+    display: block;
+    color: #ccc;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 10px;
+}
+
+.input-group input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    outline: none;
+}
+
+.input-group input::placeholder {
+    color: #999;
+}
+
+.currency {
+    color: #4CAF50;
+    font-weight: bold;
+    padding: 0 12px;
+    font-size: 14px;
+}
+
+.chip-preview {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(76, 175, 80, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.chip-preview span:first-child {
+    color: #ccc;
+}
+
+.chip-preview span:last-child {
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.deposit-button {
+    width: 100%;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.deposit-button:hover {
+    background: linear-gradient(135deg, #45a049, #3d8b40);
+    transform: translateY(-1px);
+}
+
+.deposit-button:disabled {
+    background: #666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.deposit-status {
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.deposit-status.success {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.5);
+}
+
+.deposit-status.error {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.5);
+}
+
+.deposit-status.loading {
+    background: rgba(33, 150, 243, 0.2);
+    color: #2196F3;
+    border: 1px solid rgba(33, 150, 243, 0.5);
+}

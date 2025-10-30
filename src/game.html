@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="apple-touch-icon" sizes="180x180" href="public/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="public/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="public/favicon-16x16.png">
+    <link rel="manifest" href="public/manifest.json">
+    <link rel="mask-icon" href="public/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="styles/main.css">
+    <title>Slot Game</title>
+</head>
+<body>
+    <button onclick="goHome()" class="home-btn">HOME</button>
+    <div id="game-container">
+        <div id="win-display">
+            <span id="win-text">WIN: $0</span>
+        </div>
+        <div id="game-area"></div>
+        <aside id="history-panel">
+            <div class="history-header">
+                <h3>Spin History</h3>
+                <button id="history-clear-btn" title="Clear history">Clear</button>
+            </div>
+            <ul id="history-list"></ul>
+        </aside>
+        <div id="control-panel">
+            <div class="credit-info">
+                <div class="credit-text">Credit: $<span id="credit-value">100</span></div>
+                <div class="bet-text">Bet: $<span id="bet-value">5</span></div>
+            </div>
+            <div class="bet-controls">
+                <button class="bet-btn" id="bet-decrease">-</button>
+                <button class="spin-btn" id="spin-btn">
+                    <span class="spin-icon">⟲</span>
+                    <span class="spin-text">SPIN</span>
+                </button>
+                <button class="bet-btn" id="bet-increase">+</button>
+            </div>
+            <div class="game-options">
+                <button class="option-btn" id="pay-table-btn">Pay Table</button>
+                <button class="option-btn" id="auto-btn">AUTO | OFF</button>
+                <button class="option-btn" id="turbo-btn">TURBO | OFF</button>
+            </div>
+            <div class="wallet-panel">
+                <button class="wallet-btn" id="wallet-connect-btn">Connect Wallet</button>
+                <button class="deposit-btn" id="deposit-open-btn" style="display: none;">Deposit</button>
+                <div class="wallet-meta">
+                    <span class="wallet-address" id="wallet-address">Not Connected</span>
+                    <span class="wallet-balance" id="wallet-balance-label">CHIP: <span id="chip-balance">0</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pay Table Modal -->
+    <div id="pay-table-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Pay Table</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="pay-table">
+                    <div class="pay-row header">
+                        <div class="symbol">Symbol</div>
+                        <div class="payout">3-4</div>
+                        <div class="payout">5-6</div>
+                        <div class="payout">7-8</div>
+                        <div class="payout">9-10</div>
+                    </div>
+                    <div class="pay-row">
+                        <div class="symbol">
+                            <img src="/assets/1.png" alt="1" class="symbol-img">
+                            <span>1</span>
+                        </div>
+                        <div class="payout">0.3x-0.5x</div>
+                        <div class="payout">1x-2x</div>
+                        <div class="payout">3x-5x</div>
+                        <div class="payout">10x-20x</div>
+                    </div>
+                    <div class="pay-row">
+                        <div class="symbol">
+                            <img src="/assets/2.png" alt="2" class="symbol-img">
+                            <span>2</span>
+                        </div>
+                        <div class="payout">0.5x-0.7x</div>
+                        <div class="payout">1.5x-3x</div>
+                        <div class="payout">5x-10x</div>
+                        <div class="payout">20x-40x</div>
+                    </div>
+                    <div class="pay-row">
+                        <div class="symbol">
+                            <img src="/assets/3.png" alt="3" class="symbol-img">
+                            <span>3</span>
+                        </div>
+                        <div class="payout">1x-2x</div>
+                        <div class="payout">4x-8x</div>
+                        <div class="payout">15x-25x</div>
+                        <div class="payout">50x-100x</div>
+                    </div>
+                    <div class="pay-row">
+                        <div class="symbol">
+                            <img src="/assets/4.png" alt="4" class="symbol-img">
+                            <span>4</span>
+                        </div>
+                        <div class="payout">2x-4x</div>
+                        <div class="payout">8x-15x</div>
+                        <div class="payout">25x-50x</div>
+                        <div class="payout">100x-200x</div>
+                    </div>
+                    <div class="pay-row">
+                        <div class="symbol">
+                            <img src="/assets/5.png" alt="5" class="symbol-img">
+                            <span>5</span>
+                        </div>
+                        <div class="payout">5x-10x</div>
+                        <div class="payout">20x-40x</div>
+                        <div class="payout">75x-150x</div>
+                        <div class="payout">300x-600x</div>
+                    </div>
+                    <div class="pay-row wild">
+                        <div class="symbol">
+                            <img src="/assets/wild.png" alt="WILD" class="symbol-img">
+                            <span>WILD</span>
+                        </div>
+                        <div class="payout">10x-25x</div>
+                        <div class="payout">50x-100x</div>
+                        <div class="payout">200x-400x</div>
+                        <div class="payout">800x-1000x</div>
+                    </div>
+                </div>
+                <div class="pay-info">
+                    <p><strong>WILD</strong> substitutes for any symbol to complete winning combinations</p>
+                    <p>Match 3-10 symbols in a row to win (more symbols = higher payout)</p>
+                    <p>Payouts are multiplied by your bet amount</p>
+                    <p>Higher rarity symbols pay more (1 = common, 5 = rare, WILD = legendary)</p>
+                    <p>Maximum payout: 1000x your bet!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div id="deposit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Deposit MON for CHIP</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="deposit-info">
+                    <p>Convert MON to CHIP tokens to play the game</p>
+                    <div class="rate-info">
+                        <span class="rate">1 MON = 1000 CHIP</span>
+                        <span class="min-deposit">Minimum: 0.1 MON</span>
+                    </div>
+                </div>
+                <div class="deposit-form">
+                    <label for="deposit-amount">MON Amount:</label>
+                    <div class="input-group">
+                        <input type="number" id="deposit-amount" placeholder="0.1" step="0.1" min="0.1">
+                        <span class="currency">MON</span>
+                    </div>
+                    <div class="chip-preview">
+                        <span>You will receive: </span>
+                        <span id="chip-amount">0 CHIP</span>
+                    </div>
+                    <button id="deposit-btn" class="deposit-button">Deposit MON</button>
+                </div>
+                <div id="deposit-status" class="deposit-status"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+    </script>
+    
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+</body>
+</html>

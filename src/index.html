@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monad Casino - Slot Machine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@400;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="public/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="public/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="public/favicon-16x16.png">
+    <link rel="manifest" href="public/manifest.json">
+    <link rel="mask-icon" href="public/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="styles/homepage.css">
+</head>
+<body>
+    <div class="casino-home">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="casino-logo">
+                <img src="assets/logo.png" alt="Monad Casino" class="logo-image" />
+            </div>
+            
+            <h1 class="main-title">MONAD CASINO</h1>
+            <p class="subtitle">Play Slot Machine and Win MON Tokens!</p>
+            
+            <!-- Wallet Connection -->
+            <div class="wallet-section">
+                <div id="wallet-actions">
+                    <button id="connect-wallet" class="connect-wallet-btn">
+                        <i class="fas fa-wallet"></i> Connect Wallet
+                    </button>
+                </div>
+                
+                <div id="wallet-info" class="wallet-info" style="display: none;">
+                    <div class="wallet-address">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="wallet-address"></span>
+                    </div>
+                    <div class="wallet-balance">
+                        <i class="fas fa-coins"></i>
+                        <span id="wallet-balance"></span>
+                    </div>
+                    <button id="disconnect-wallet" class="disconnect-btn">
+                        <i class="fas fa-sign-out-alt"></i> Disconnect
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Preview -->
+        <div class="game-preview">
+            <h2 class="preview-title">Choose Your Game</h2>
+            
+            <div class="game-cards">
+                <div class="game-card slot-machine-card" onclick="playSlotGame()">
+                    <div class="game-image">
+                        <img src="assets/slotgame.PNG" alt="Slot Machine" class="slot-image" />
+                    </div>
+                    <h3 class="card-title">Slot Machine</h3>
+                    <div class="card-features">
+                        <span class="feature-tag">Jackpot</span>
+                        <span class="feature-tag">Blockchain</span>
+                    </div>
+                </div>
+                
+                <div class="game-card coming-soon-card" onclick="showComingSoon('Rock Paper Scissors')">
+                    <div class="game-image">
+                        <img src="assets/rock-scissors-paper.png" alt="Rock Paper Scissors" class="game-image-small" />
+                    </div>
+                    <h3 class="card-title">Rock Paper Scissors</h3>
+                    <p class="card-description">Classic game with MON token rewards! Coming soon with blockchain integration.</p>
+                    <div class="card-features">
+                        <span class="feature-tag coming-soon">Coming Soon</span>
+                    </div>
+                </div>
+                
+                <div class="game-card coming-soon-card" onclick="showComingSoon('Spin Wheel')">
+                    <div class="game-image">
+                        <img src="assets/spin-wheel.png" alt="Spin Wheel" class="game-image-small" />
+                    </div>
+                    <h3 class="card-title">Spin Wheel</h3>
+                    <p class="card-description">Spin the wheel and win big! Coming soon with multiple prize levels.</p>
+                    <div class="card-features">
+                        <span class="feature-tag coming-soon">Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-text">Powered by Monad Testnet</p>
+            <div class="social-links">
+                <a href="#" class="social-link">Twitter</a>
+                <a href="#" class="social-link">Discord</a>
+                <a href="#" class="social-link">Telegram</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Wallet connection logic
+        let isConnected = false;
+
+        // Initialize wallet integration
+        async function initializeWallet() {
+            try {
+                // Check if ethereum is available
+                if (typeof window.ethereum !== 'undefined') {
+                    console.log('✅ Ethereum provider found');
+                    
+                    // Handle multiple wallet extensions
+                    if (window.ethereum.providers && window.ethereum.providers.length > 1) {
+                        console.log('⚠️ Multiple wallet extensions detected');
+                        // Prioritize MetaMask or first available
+                        const metamask = window.ethereum.providers.find(provider => provider.isMetaMask);
+                        if (metamask) {
+                            window.ethereum = metamask;
+                            console.log('✅ Using MetaMask provider');
+                        } else {
+                            window.ethereum = window.ethereum.providers[0];
+                            console.log('✅ Using first available provider');
+                        }
+                    }
+                    
+                    // Check connection status
+                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                    if (accounts.length > 0) {
+                        isConnected = true;
+                        updateWalletUI(accounts[0]);
+                    }
+                } else {
+                    console.log('❌ No Ethereum provider found');
+                }
+            } catch (error) {
+                console.error('❌ Wallet initialization error:', error);
+            }
+        }
+
+        // Update wallet UI
+        async function updateWalletUI(account) {
+            const connectBtn = document.getElementById('connect-wallet');
+            const walletInfo = document.getElementById('wallet-info');
+            const walletAddress = document.getElementById('wallet-address');
+            const walletBalance = document.getElementById('wallet-balance');
+
+            if (isConnected) {
+                connectBtn.style.display = 'none';
+                walletInfo.style.display = 'block';
+                walletAddress.textContent = account.slice(0, 6) + '...' + account.slice(-4);
+                
+                // Get balance
+                try {
+                    const balance = await window.ethereum.request({
+                        method: 'eth_getBalance',
+                        params: [account, 'latest']
+                    });
+                    const balanceInEth = (parseInt(balance, 16) / Math.pow(10, 18)).toFixed(4);
+                    walletBalance.textContent = balanceInEth + ' MON';
+                } catch (error) {
+                    console.error('❌ Failed to get balance:', error);
+                    walletBalance.textContent = 'N/A MON';
+                }
+            } else {
+                connectBtn.style.display = 'block';
+                walletInfo.style.display = 'none';
+            }
+        }
+
+        // Connect wallet
+        async function connectWallet() {
+            try {
+                const accounts = await window.ethereum.request({
+                    method: 'eth_requestAccounts'
+                });
+                
+                if (accounts.length > 0) {
+                    isConnected = true;
+                    updateWalletUI(accounts[0]);
+                    console.log('✅ Wallet connected:', accounts[0]);
+                }
+            } catch (error) {
+                console.error('❌ Wallet connection failed:', error);
+                alert('Failed to connect wallet: ' + error.message);
+            }
+        }
+
+        // Disconnect wallet
+        function disconnectWallet() {
+            isConnected = false;
+            updateWalletUI(null);
+            console.log('✅ Wallet disconnected');
+        }
+
+        // Play slot game
+        function playSlotGame() {
+            if (!isConnected) {
+                alert('Please connect your wallet first!');
+                return;
+            }
+            
+            // Redirect to slot game
+            window.location.href = 'game.html';
+        }
+
+        // Show coming soon message
+        function showComingSoon(gameName) {
+            alert(`${gameName} is coming soon! Stay tuned for updates.`);
+        }
+
+        // Event listeners
+        document.getElementById('connect-wallet').addEventListener('click', connectWallet);
+        document.getElementById('disconnect-wallet').addEventListener('click', disconnectWallet);
+
+        // Initialize on page load
+        window.addEventListener('load', initializeWallet);
+    </script>
+</body>
+</html>
