@@ -2,8 +2,6 @@
 
 Blockchain-powered slot machine game on Monad Testnet. Play and win CHIP tokens with on-chain smart contracts.
 
-**🎮 [Live Demo](https://slotgames-monad.vercel.app/game.html)**
-
 ## Quick Start
 
 ```bash
